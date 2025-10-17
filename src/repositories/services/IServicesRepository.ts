@@ -1,16 +1,27 @@
 
 
 export type servicesCreateDTO = {
-    id: string;
     title: string;
     description: string | null;
     price: number;
-    barbershopId: string;
+    providerId: string;
 }
 
 
 export type servicesSavedDTO = {
-
+    id: string;
+    providerId: string;
+    title: string;
+    description: string | null;
+    price: number;
+    provider: {
+        user: {
+            fullname: string;
+            email: string;
+        };
+    }
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 
