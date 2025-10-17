@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  fullname  String
+  email     String    @unique
+  password  String
+  nif       String    @unique
+  role      Role
+  client    Client?
+  provider  Provider?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("Users")
+}
+
+model Client {
+  id       String    @id @default(uuid())
+  user     User      @relation(fields: [id], references: [id])
+  balance  Float     @default(0.0)
+  bookings Booking[] @relation("ClientBookings")
+}
+
+model Provider {
+  id       String    @id @default(uuid())
+  user     User      @relation(fields: [id], references: [id])
+  services Service[]
+  bookings Booking[] @relation("ProviderBookings")
+
+  @@map("Providers")
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  price       Float
+  providerId  String
+  provider    Provider  @relation(fields: [providerId], references: [id])
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("Services")
+}
+
+model Booking {
+  id String @id @default(uuid())
+  clientId   String
+  serviceId  String
+  providerId String
+  price      Float
+  status     BookingStatus @default(Confirmed)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  client   Client   @relation("ClientBookings", fields: [clientId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+  provider Provider @relation("ProviderBookings", fields: [providerId], references: [id])
+
+  @@map("Bookings")
+}
+
+enum Role {
+  Client
+  Provider
+}
+
+enum BookingStatus {
+  Confirmed
+  Canceled
+  Completed
+}
