@@ -1,17 +1,17 @@
 
 
-export type servicesCreateDTO = {
-    title: string;
+export type IServicesCreateDTO = {
+    name: string;
     description: string | null;
     price: number;
     providerId: string;
 }
 
 
-export type servicesSavedDTO = {
+export type IServicesSavedDTO = {
     id: string;
     providerId: string;
-    title: string;
+    name: string;
     description: string | null;
     price: number;
     provider: {
@@ -27,8 +27,9 @@ export type servicesSavedDTO = {
 
 
 export interface IServicesRepository {
-    create(data: servicesCreateDTO): Promise<servicesCreateDTO | void>
-    findAll(): Promise<servicesSavedDTO[] | null>
-    findById(id: string): Promise<servicesSavedDTO | null>
+    create(data: IServicesCreateDTO): Promise<IServicesCreateDTO | void>
+    findAll(): Promise<IServicesSavedDTO[] | null>
+    findById(id: string): Promise<IServicesSavedDTO | null>
+    findByname(name: string): Promise<IServicesSavedDTO | null>
     delete(id: string): Promise<void>
 }

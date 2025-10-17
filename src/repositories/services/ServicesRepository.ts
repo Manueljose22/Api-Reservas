@@ -1,15 +1,38 @@
 import prisma from "../../config/prisma";
-import { IServicesRepository, servicesCreateDTO, servicesSavedDTO } from "./IServicesRepository";
+import { IServicesRepository, IServicesCreateDTO, IServicesSavedDTO } from "./IServicesRepository";
 
 
 
 
 export class ServicesRepository implements IServicesRepository {
+    async findByname(name: string): Promise<IServicesSavedDTO | null> {
+        const service = await prisma.service.findFirst(
+            {
+                where: {
+                    name
+                },
+                include: {
+                    provider: {
+                        select: {
+                            user: {
+                                select: {
+                                    fullname: true,
+                                    email: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
 
-    async create({ providerId, description, price, title }: servicesCreateDTO): Promise<servicesCreateDTO> {
+        return service
+    }
+
+    async create({ providerId, description, price, name }: IServicesCreateDTO): Promise<IServicesCreateDTO> {
         return await prisma.service.create({
             data: {
-                title,
+                name,
                 description,
                 price,
                 providerId
@@ -17,7 +40,7 @@ export class ServicesRepository implements IServicesRepository {
         })
     }
 
-    async findAll(): Promise<servicesSavedDTO[] | null> {
+    async findAll(): Promise<IServicesSavedDTO[] | null> {
         const services = await prisma.service.findMany(
             {
                 include: {
@@ -38,7 +61,7 @@ export class ServicesRepository implements IServicesRepository {
         return services
     }
 
-    async findById(id: string): Promise<servicesSavedDTO | null> {
+    async findById(id: string): Promise<IServicesSavedDTO | null> {
         const service = await prisma.service.findFirst(
             {
                 where: {
