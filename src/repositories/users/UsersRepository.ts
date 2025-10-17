@@ -6,6 +6,7 @@ import { IUserCreateDTO, IUserSavedDTO, IUsersRepository } from "./IUsersReposit
 
 
 export class UsersRepository implements IUsersRepository {
+    
     async create({ fullname, balance, email, nif, password, role }: IUserCreateDTO): Promise<IUserSavedDTO> {
 
         const user = await prisma.user.create({

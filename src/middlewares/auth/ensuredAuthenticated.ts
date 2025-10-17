@@ -21,7 +21,7 @@ export const ensuredAuthenticated = async (request: Request, response: Response,
 
     try {
 
-        const {id} = verify(token, String(process.env.SECRET_JWT)) as jwtPayload;
+        const {id} = verify(token, String(process.env.JWT_SECRET)) as jwtPayload;
  
         request.userId = id;
        

@@ -27,7 +27,7 @@ export type IServicesSavedDTO = {
 
 
 export interface IServicesRepository {
-    create(data: IServicesCreateDTO): Promise<IServicesCreateDTO | void>
+    create(data: IServicesCreateDTO): Promise<void>
     findAll(): Promise<IServicesSavedDTO[] | null>
     findById(id: string): Promise<IServicesSavedDTO | null>
     findByname(name: string): Promise<IServicesSavedDTO | null>

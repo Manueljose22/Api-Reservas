@@ -29,15 +29,17 @@ export class ServicesRepository implements IServicesRepository {
         return service
     }
 
-    async create({ providerId, description, price, name }: IServicesCreateDTO): Promise<IServicesCreateDTO> {
-        return await prisma.service.create({
+    async create({ providerId, description, price, name }: IServicesCreateDTO): Promise<void> {
+
+        await prisma.service.create({
             data: {
                 name,
                 description,
-                price,
+                price: Number(price),
                 providerId
             }
         })
+
     }
 
     async findAll(): Promise<IServicesSavedDTO[] | null> {
