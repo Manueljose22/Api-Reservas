@@ -12,14 +12,16 @@ export type bookingCreateDTO = {
 
 export type bookingSavedDTO = {
     service: {
-        id: string;
         price: number;
-        createdAt: Date;
-        updatedAt: Date;
-        providerId: string;
+        provider: {
+            user: {
+                fullname: string;
+            };
+        };
+        id: string;
         name: string;
         description: string | null;
-    };
+    }
     id: string;
     price: number;
     status: BookingStatus;

@@ -38,7 +38,23 @@ export class BookingsRepository implements IBookingsRepository {
     async findAll(): Promise<bookingSavedDTO[] | null> {
         const bookings = await prisma.booking.findMany({
             include: {
-                service: true
+                service: {
+                    select:{
+                        id: true,
+                        name: true,
+                        description: true,
+                        price: true,
+                        provider:{
+                            select:{
+                                user:{
+                                    select:{
+                                        fullname: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
         return bookings
@@ -50,7 +66,23 @@ export class BookingsRepository implements IBookingsRepository {
                 providerId
             },
             include: {
-                service: true
+                service: {
+                    select:{
+                        id: true,
+                        name: true,
+                        description: true,
+                        price: true,
+                        provider:{
+                            select:{
+                                user:{
+                                    select:{
+                                        fullname: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
         return bookings
@@ -62,7 +94,23 @@ export class BookingsRepository implements IBookingsRepository {
                 clientId
             },
             include: {
-                service: true
+                service: {
+                    select:{
+                        id: true,
+                        name: true,
+                        description: true,
+                        price: true,
+                        provider:{
+                            select:{
+                                user:{
+                                    select:{
+                                        fullname: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
         return bookings
@@ -74,7 +122,23 @@ export class BookingsRepository implements IBookingsRepository {
                 id
             },
             include: {
-                service: true
+                service: {
+                    select:{
+                        id: true,
+                        name: true,
+                        description: true,
+                        price: true,
+                        provider:{
+                            select:{
+                                user:{
+                                    select:{
+                                        fullname: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
         return booking
