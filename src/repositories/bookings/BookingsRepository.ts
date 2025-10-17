@@ -7,18 +7,19 @@ import { bookingCreateDTO, bookingSavedDTO, IBookingsRepository } from "./IBooki
 
 export class BookingsRepository implements IBookingsRepository {
 
-    async create({clientId, newClientBalance, newProviderBalance, price, providerId, serviceId}: bookingCreateDTO): Promise<void> {
-       
-         await prisma.$transaction(async (tx) => {
-            
-            const booking = await tx.booking.create({ 
+    async create({ clientId, newClientBalance, newProviderBalance, price, providerId, serviceId }: bookingCreateDTO): Promise<void> {
+
+        await prisma.$transaction(async (tx) => {
+
+            const booking = await tx.booking.create({
                 data: {
                     price,
-                    clientId, 
+                    clientId,
                     providerId,
                     serviceId
-                } });
-            
+                }
+            });
+
             await tx.client.update({
                 where: { id: clientId },
                 data: { balance: newClientBalance },
@@ -34,57 +35,85 @@ export class BookingsRepository implements IBookingsRepository {
     }
 
 
-    async findAll(): Promise < bookingSavedDTO[] | null > {
-    const bookings = await prisma.booking.findMany({
-        include: {
-            service: true
-        }
-    });
-    return bookings
-}
+    async findAll(): Promise<bookingSavedDTO[] | null> {
+        const bookings = await prisma.booking.findMany({
+            include: {
+                service: true
+            }
+        });
+        return bookings
+    }
 
-    async findAllByProvider(providerId: string): Promise < bookingSavedDTO[] | null > {
-    const bookings = await prisma.booking.findMany({
-        where: {
-            providerId
-        },
-        include: {
-            service: true
-        }
-    });
-    return bookings
-}
+    async findAllByProvider(providerId: string): Promise<bookingSavedDTO[] | null> {
+        const bookings = await prisma.booking.findMany({
+            where: {
+                providerId
+            },
+            include: {
+                service: true
+            }
+        });
+        return bookings
+    }
 
-    async findAllByClient(clientId: string): Promise < bookingSavedDTO[] | null > {
-    const bookings = await prisma.booking.findMany({
-        where: {
-            clientId
-        },
-        include: {
-            service: true
-        }
-    });
-    return bookings
-}
+    async findAllByClient(clientId: string): Promise<bookingSavedDTO[] | null> {
+        const bookings = await prisma.booking.findMany({
+            where: {
+                clientId
+            },
+            include: {
+                service: true
+            }
+        });
+        return bookings
+    }
 
-    async findById(id: string): Promise < bookingSavedDTO | null > {
-    const booking = await prisma.booking.findFirst({
-        where: {
-            id
-        },
-        include: {
-            service: true
-        }
-    });
-    return booking
-}
+    async findById(id: string): Promise<bookingSavedDTO | null> {
+        const booking = await prisma.booking.findFirst({
+            where: {
+                id
+            },
+            include: {
+                service: true
+            }
+        });
+        return booking
+    }
 
-    async delete (id: string): Promise < void> {
-    await prisma.booking.delete({
-        where: {
-            id
-        }
-    })
-}
+    async cancelBooking(id: string): Promise<void> {
+        await prisma.booking.update({
+            where: {
+                id
+            },
+            data: {
+                status: "Canceled"
+            }
+        })
+    }
+
+    async update(serviceId: string, data: bookingCreateDTO): Promise<void> {
+        await prisma.$transaction(async (tx) => {
+            await tx.booking.update({
+                where: {
+                    id: serviceId
+                },
+                data: {
+                    price: data.price,
+                    clientId: data.clientId,
+                    providerId: data.providerId,
+                }
+            });
+
+            await tx.client.update({
+                where: { id: data.clientId },
+                data: { balance: data.newClientBalance },
+            });
+
+            await tx.provider.update({
+                where: { id: data.providerId },
+                data: { balance: data.newProviderBalance },
+            });
+        });
+    }
 
 }

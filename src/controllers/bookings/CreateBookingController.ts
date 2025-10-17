@@ -25,7 +25,7 @@ class CreateBookingController {
 
             await createBookingService.execute(data);
 
-            return response.json({ message: "Agendamento criado com sucesso." })
+            return response.json({ message: "Reserva criada com sucesso." })
 
         } catch (error: any) {
             return response.status(400).json({ message: error.message })

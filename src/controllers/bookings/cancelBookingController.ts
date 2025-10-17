@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
 import { BookingsRepository } from '../../repositories/bookings/BookingsRepository';
-import { DeleteBookingService } from '../../services/bookings/deleteBookingService';
+import { cancelBookingService } from '../../services/bookings/cancelBookingService';
 
 
 
-class DeleteBookingController {
+class CancelBookingController {
     async handle(request: Request, response: Response) {
         const { id } = request.params;
+        const {userId} = request;
 
         try {
             const bookingsRepository = new BookingsRepository();
-            const service = new DeleteBookingService(bookingsRepository);
+            const service = new cancelBookingService(bookingsRepository);
 
-            await service.execute(id);
+            await service.execute(userId,id);
 
             return response.json({ message: 'Agendamento cancelado com sucesso.' });
         } catch (error: any) {
@@ -21,4 +22,4 @@ class DeleteBookingController {
     }
 }
 
-export default new DeleteBookingController();
+export default new CancelBookingController();

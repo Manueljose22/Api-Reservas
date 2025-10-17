@@ -39,5 +39,6 @@ export interface IBookingsRepository {
     findAllByProvider(providerId: string): Promise<bookingSavedDTO[] | null>
     findAllByClient(clientId: string): Promise<bookingSavedDTO[] | null>
     findById(id: string): Promise<bookingSavedDTO | null>
-    delete(id: string): Promise<void>
+    cancelBooking(id: string): Promise<void>
+    update(serviceId: string, data: bookingCreateDTO): Promise<void>
 }
