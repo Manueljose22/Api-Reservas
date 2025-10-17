@@ -52,7 +52,7 @@ export class ClientsRepository implements IClientsRepository {
             where: {
                 id
             },
-            data: { balance: { increment: balance } },
+            data: { balance: balance },
         })
     }
 

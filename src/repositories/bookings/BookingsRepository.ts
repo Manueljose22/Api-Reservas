@@ -7,68 +7,84 @@ import { bookingCreateDTO, bookingSavedDTO, IBookingsRepository } from "./IBooki
 
 export class BookingsRepository implements IBookingsRepository {
 
-    async create(data: bookingCreateDTO): Promise<void> {
-        await prisma.booking.create({
-            data: {
-                clientId: data.clientId,
-                serviceId: data.serviceId,
-                providerId: data.providerId,
-                price: data.price
-            }
-        })
-    }
+    async create({clientId, newClientBalance, newProviderBalance, price, providerId, serviceId}: bookingCreateDTO): Promise<void> {
+       
+         await prisma.$transaction(async (tx) => {
+            
+            const booking = await tx.booking.create({ 
+                data: {
+                    price,
+                    clientId, 
+                    providerId,
+                    serviceId
+                } });
+            
+            await tx.client.update({
+                where: { id: clientId },
+                data: { balance: newClientBalance },
+            });
 
-    async findAll(): Promise<bookingSavedDTO[] | null> {
-        const bookings = await prisma.booking.findMany({
-            include: {
-                service: true
-            }
+            await tx.provider.update({
+                where: { id: providerId },
+                data: { balance: newProviderBalance },
+            });
+
+            return booking;
         });
-        return bookings
     }
 
-    async findAllByProvider(providerId: string): Promise<bookingSavedDTO[] | null> {
-        const bookings = await prisma.booking.findMany({
-            where: {
-                providerId
-            },
-            include: {
-                service: true
-            }
-        });
-        return bookings
-    }
 
-    async findAllByClient(clientId: string): Promise<bookingSavedDTO[] | null> {
-        const bookings = await prisma.booking.findMany({
-            where: {
-                clientId
-            },
-            include: {
-                service: true
-            }
-        });
-        return bookings
-    }
+    async findAll(): Promise < bookingSavedDTO[] | null > {
+    const bookings = await prisma.booking.findMany({
+        include: {
+            service: true
+        }
+    });
+    return bookings
+}
 
-    async findById(id: string): Promise<bookingSavedDTO | null> {
-        const booking = await prisma.booking.findFirst({
-            where: {
-                id
-            },
-            include: {
-                service: true
-            }
-        });
-        return booking
-    }
+    async findAllByProvider(providerId: string): Promise < bookingSavedDTO[] | null > {
+    const bookings = await prisma.booking.findMany({
+        where: {
+            providerId
+        },
+        include: {
+            service: true
+        }
+    });
+    return bookings
+}
 
-    async delete(id: string): Promise<void> {
-        await prisma.booking.delete({
-            where: {
-                id
-            }
-        })
-    }
+    async findAllByClient(clientId: string): Promise < bookingSavedDTO[] | null > {
+    const bookings = await prisma.booking.findMany({
+        where: {
+            clientId
+        },
+        include: {
+            service: true
+        }
+    });
+    return bookings
+}
+
+    async findById(id: string): Promise < bookingSavedDTO | null > {
+    const booking = await prisma.booking.findFirst({
+        where: {
+            id
+        },
+        include: {
+            service: true
+        }
+    });
+    return booking
+}
+
+    async delete (id: string): Promise < void> {
+    await prisma.booking.delete({
+        where: {
+            id
+        }
+    })
+}
 
 }

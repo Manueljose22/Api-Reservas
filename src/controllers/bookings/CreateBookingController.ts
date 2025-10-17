@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { BookingsRepository } from '../../repositories/bookings/BookingsRepository';
-import { CreateBookingService } from '../../services/bookings/createBookingService';
+
 import { ClientsRepository } from '../../repositories/clients/ClientsRepository';
 import { ProvidersRepository } from '../../repositories/providers/ProvidersRepository';
 import { bookingCreateDTO } from '../../repositories/bookings/IBookingsRepository';
+import { CreateBookingService } from '../../services/bookings/createBookingService';
 
 
 

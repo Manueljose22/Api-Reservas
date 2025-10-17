@@ -2,7 +2,7 @@ import { BookingsRepository } from "../../repositories/bookings/BookingsReposito
 import { ClientsRepository } from "../../repositories/clients/ClientsRepository";
 import { ProvidersRepository } from "../../repositories/providers/ProvidersRepository";
 import { bookingCreateDTO } from "../../repositories/bookings/IBookingsRepository";
-import prisma from "../../config/prisma";
+
 
 
 
@@ -21,7 +21,7 @@ class CreateBookingService {
         } else if (!data.serviceId) {
             throw new Error("Informe o  serviço");
         } else if (!data.providerId) {
-            throw new Error("Informe o id do prestador de serviço");
+            throw new Error("Informe o prestador de serviço");
         } else if (!data.price) {
             throw new Error("Informe o preço do serviço");
         }
@@ -43,11 +43,14 @@ class CreateBookingService {
         const newClientBalance = client.balance - data.price;
         const newProviderBalance = provider.balance + data.price;
 
-        await prisma.$transaction(async (prisma) => {
-            await this.bookingsRepository.create(data);
-            await this.clientsRepository.updateBalance(data.clientId, newClientBalance);
-            await this.providersRepository.updateBalance(data.providerId, newProviderBalance);
-        });
+        await this.bookingsRepository.create({ 
+            newClientBalance, 
+            newProviderBalance, 
+            clientId: data.clientId, 
+            price: data.price, 
+            providerId: data.providerId, 
+            serviceId: data.serviceId })
+
     }
 }
 

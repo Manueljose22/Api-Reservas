@@ -25,14 +25,14 @@ model User {
 model Client {
   id       String    @id @default(uuid())
   user     User      @relation(fields: [id], references: [id])
-  balance  Float     @default(0.0)
+  balance  Float     @default(50000)
   bookings Booking[] @relation("ClientBookings")
 }
 
 model Provider {
   id       String    @id @default(uuid())
   user     User      @relation(fields: [id], references: [id])
-  balance  Float     @default(0.0)
+  balance  Float     @default(30000)
   services Service[]
   bookings Booking[] @relation("ProviderBookings")
 

@@ -20,7 +20,7 @@ export class ProvidersRepository implements IProvidersRepository {
             where: {
                 id
             },
-            data: { balance: { increment: balance } },
+            data: { balance:  balance },
         })
     }
 

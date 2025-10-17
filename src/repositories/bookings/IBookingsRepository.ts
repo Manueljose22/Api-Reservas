@@ -1,12 +1,12 @@
-
-
-import { Booking, BookingStatus } from "@prisma/client";
+import { BookingStatus } from "@prisma/client";
 
 export type bookingCreateDTO = {
     clientId: string;
     serviceId: string;
-    providerId: string
-    price: number
+    providerId: string;
+    price: number;
+    newClientBalance: number;
+    newProviderBalance: number;
 
 }
 

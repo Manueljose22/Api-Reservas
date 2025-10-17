@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `client` MODIFY `balance` DOUBLE NOT NULL DEFAULT 50000;
+
+-- AlterTable
+ALTER TABLE `providers` MODIFY `balance` DOUBLE NOT NULL DEFAULT 30000;
