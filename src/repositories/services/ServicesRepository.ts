@@ -5,6 +5,31 @@ import { IServicesRepository, IServicesCreateDTO, IServicesSavedDTO } from "./IS
 
 
 export class ServicesRepository implements IServicesRepository {
+    
+    async findAllByProvider(userId: string): Promise<IServicesSavedDTO[] | null> {
+        const services = await prisma.service.findMany(
+            {
+                where:{
+                    providerId: userId
+                },
+                include: {
+                    provider: {
+                        select: {
+                            user: {
+                                select: {
+                                    fullname: true,
+                                    email: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
+        return services;
+    }
+    
     async findByname(name: string): Promise<IServicesSavedDTO | null> {
         const service = await prisma.service.findFirst(
             {
