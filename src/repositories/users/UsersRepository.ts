@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import prisma from "../../config/prisma";
 import { IUserCreateDTO, IUserSavedDTO, IUsersRepository } from "./IUsersRepository";
 
@@ -8,15 +9,15 @@ import { IUserCreateDTO, IUserSavedDTO, IUsersRepository } from "./IUsersReposit
 export class UsersRepository implements IUsersRepository {
     
     async create({ fullname, balance, email, nif, password, role }: IUserCreateDTO): Promise<IUserSavedDTO> {
-
+      
         const user = await prisma.user.create({
             data: {
                 email: email,
                 fullname: fullname,
                 nif: nif,
                 password: password,
-                role: role,
-                ...(role === "Client" ?
+                role: role.toUpperCase() as Role,
+                ...(role === "CLIENT" ?
                     { client: { create: { balance: balance } } } :
                     { provider: { create: {} } })
             },

@@ -7,7 +7,7 @@ const router = Router();
 
 
 
-router.post('/auth/register', validateRegister, signUpController.handle);
+router.post('/auth/signUp', validateRegister, signUpController.handle);
 router.post('/auth/signIn', validateRegister, signInController.handle);
 
 

@@ -31,6 +31,7 @@ class SignInService {
 
         return {
             userId: user.id,
+            name: user.fullname,
             role: user.role,
             token: token
         }

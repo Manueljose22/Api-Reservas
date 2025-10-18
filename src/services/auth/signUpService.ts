@@ -5,6 +5,7 @@ import { generateUserToken } from "../../middlewares/auth/generateToken";
 
 export type userAuth = {
     userId: string;
+    name: string;
     role: string;
     token: string;
 }
@@ -43,6 +44,7 @@ class signUpService {
         
         return {
             userId: newUser.id,
+            name: newUser.fullname,
             role: newUser.role,
             token: token
         }

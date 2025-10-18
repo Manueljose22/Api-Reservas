@@ -150,7 +150,7 @@ export class BookingsRepository implements IBookingsRepository {
                 id
             },
             data: {
-                status: "Canceled"
+                status: "CANCELED"
             }
         })
     }

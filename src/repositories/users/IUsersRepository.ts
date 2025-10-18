@@ -6,7 +6,7 @@ export type IUserCreateDTO = {
     email: string;
     password: string;
     nif: string;
-    role: 'Client' | 'Provider';
+    role: 'CLIENT' | 'PROVIDER';
     balance: number;
 }
 
@@ -17,7 +17,7 @@ export type IUserSavedDTO = {
     email: string;
     nif: string;
     password: string;
-    role: 'Client' | 'Provider';
+    role: 'CLIENT' | 'PROVIDER';
     createdAt: Date;
     updatedAt: Date;
     client: {
