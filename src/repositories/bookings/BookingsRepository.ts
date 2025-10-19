@@ -39,15 +39,15 @@ export class BookingsRepository implements IBookingsRepository {
         const bookings = await prisma.booking.findMany({
             include: {
                 service: {
-                    select:{
+                    select: {
                         id: true,
                         name: true,
                         description: true,
                         price: true,
-                        provider:{
-                            select:{
-                                user:{
-                                    select:{
+                        provider: {
+                            select: {
+                                user: {
+                                    select: {
                                         fullname: true
                                     }
                                 }
@@ -60,50 +60,26 @@ export class BookingsRepository implements IBookingsRepository {
         return bookings
     }
 
-    async findAllByProvider(providerId: string): Promise<bookingSavedDTO[] | null> {
-        const bookings = await prisma.booking.findMany({
-            where: {
-                providerId
-            },
-            include: {
-                service: {
-                    select:{
-                        id: true,
-                        name: true,
-                        description: true,
-                        price: true,
-                        provider:{
-                            select:{
-                                user:{
-                                    select:{
-                                        fullname: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        return bookings
-    }
+    async findAllByUser(userId: string): Promise<bookingSavedDTO[] | null> {
 
-    async findAllByClient(clientId: string): Promise<bookingSavedDTO[] | null> {
         const bookings = await prisma.booking.findMany({
             where: {
-                clientId
+                OR: [
+                    { clientId: userId },  
+                    { providerId: userId } 
+                ]
             },
             include: {
                 service: {
-                    select:{
+                    select: {
                         id: true,
                         name: true,
                         description: true,
                         price: true,
-                        provider:{
-                            select:{
-                                user:{
-                                    select:{
+                        provider: {
+                            select: {
+                                user: {
+                                    select: {
                                         fullname: true
                                     }
                                 }
@@ -113,6 +89,8 @@ export class BookingsRepository implements IBookingsRepository {
                 }
             }
         });
+        console.log(bookings);
+        
         return bookings
     }
 
@@ -123,15 +101,15 @@ export class BookingsRepository implements IBookingsRepository {
             },
             include: {
                 service: {
-                    select:{
+                    select: {
                         id: true,
                         name: true,
                         description: true,
                         price: true,
-                        provider:{
-                            select:{
-                                user:{
-                                    select:{
+                        provider: {
+                            select: {
+                                user: {
+                                    select: {
                                         fullname: true
                                     }
                                 }

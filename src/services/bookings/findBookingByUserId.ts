@@ -11,7 +11,7 @@ class findBookingByUserIdService {
 
     async execute(userId: string): Promise<Error | bookingSavedDTO[]> {
 
-        const bookings = await this.bookingsRepository.findAllByClient(userId)
+        const bookings = await this.bookingsRepository.findAllByUser(userId)
 
         if (!bookings) {
             throw new Error("Não existe reservas");

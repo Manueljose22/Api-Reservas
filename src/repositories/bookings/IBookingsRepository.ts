@@ -38,8 +38,7 @@ export type bookingSavedDTO = {
 export interface IBookingsRepository {
     create(data: bookingCreateDTO): Promise<bookingSavedDTO | void>
     findAll(): Promise<bookingSavedDTO[] | null>
-    findAllByProvider(providerId: string): Promise<bookingSavedDTO[] | null>
-    findAllByClient(clientId: string): Promise<bookingSavedDTO[] | null>
+    findAllByUser(clientId: string): Promise<bookingSavedDTO[] | null>
     findById(id: string): Promise<bookingSavedDTO | null>
     cancelBooking(id: string): Promise<void>
     update(serviceId: string, data: bookingCreateDTO): Promise<void>

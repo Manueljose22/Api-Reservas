@@ -8,7 +8,7 @@ import { findBookingByUserIdService } from '../../services/bookings/findBookingB
 class findBookingByUserIdController {
     async handle(request: Request, response: Response) {
         const { userId } = request;
-
+       
         try {
 
             const bookingsRepository = new BookingsRepository();

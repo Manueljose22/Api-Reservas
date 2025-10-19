@@ -26,22 +26,21 @@ class signUpService {
 
         if (!data.fullname) {
             throw new Error("Informe seu nome completo");
-        } else if(!data.email){
+        } else if (!data.email) {
             throw new Error("Informe seu email");
-        } else if(!data.nif){
+        } else if (!data.nif) {
             throw new Error("Informe seu nif");
-        } else if(!data.password){
+        } else if (!data.password) {
             throw new Error("Crie uma senha");
-        } 
+        }
 
         const passwordHash = await hash(data.password, 12);
         data.password = passwordHash;
 
         const newUser = await this.IUserRepository.create(data);
 
-        const token = generateUserToken(newUser.id);
+        const token = generateUserToken(newUser.client?.id! ?? newUser.provider?.id);
 
-        
         return {
             userId: newUser.id,
             name: newUser.fullname,
