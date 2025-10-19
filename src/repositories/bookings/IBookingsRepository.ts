@@ -7,7 +7,17 @@ export type bookingCreateDTO = {
     price: number;
     newClientBalance: number;
     newProviderBalance: number;
+    dateBooking: Date
 
+}
+export type bookingUpdateTranstionDTO = {
+    clientId: string;
+    serviceId: string;
+    providerId: string;
+    status: "CONFIRMED" | "COMPLETED" | "CANCELED"
+    bookingId: string;
+    refundAmount: number;
+    dateBooking: Date
 }
 
 export type bookingSavedDTO = {
@@ -17,10 +27,16 @@ export type bookingSavedDTO = {
             user: {
                 fullname: string;
             };
+            balance: number;
         };
         id: string;
         name: string;
         description: string | null;
+    }
+    client: {
+        user: {
+            fullname: string;
+        };
     }
     id: string;
     price: number;
@@ -30,6 +46,8 @@ export type bookingSavedDTO = {
     clientId: string;
     serviceId: string;
     providerId: string;
+    dateBooking: Date
+
 }
 
 
@@ -40,6 +58,6 @@ export interface IBookingsRepository {
     findAll(): Promise<bookingSavedDTO[] | null>
     findAllByUser(clientId: string): Promise<bookingSavedDTO[] | null>
     findById(id: string): Promise<bookingSavedDTO | null>
-    cancelBooking(id: string): Promise<void>
-    update(serviceId: string, data: bookingCreateDTO): Promise<void>
+    updateBookingData(bookingId: string, data: bookingUpdateTranstionDTO ): Promise<void>
+    updateTransaction(data: bookingUpdateTranstionDTO): Promise<void>
 }

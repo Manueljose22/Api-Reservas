@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { bookingCreateDTO, bookingSavedDTO, IBookingsRepository } from "./IBookingsRepository";
+import { bookingCreateDTO, bookingSavedDTO, bookingUpdateTranstionDTO, IBookingsRepository } from "./IBookingsRepository";
 
 
 
@@ -7,7 +7,7 @@ import { bookingCreateDTO, bookingSavedDTO, IBookingsRepository } from "./IBooki
 
 export class BookingsRepository implements IBookingsRepository {
 
-    async create({ clientId, newClientBalance, newProviderBalance, price, providerId, serviceId }: bookingCreateDTO): Promise<void> {
+    async create({ clientId, newClientBalance, newProviderBalance, price, providerId, serviceId, dateBooking }: bookingCreateDTO): Promise<void> {
 
         await prisma.$transaction(async (tx) => {
 
@@ -16,7 +16,8 @@ export class BookingsRepository implements IBookingsRepository {
                     price,
                     clientId,
                     providerId,
-                    serviceId
+                    serviceId,
+                    dateBooking
                 }
             });
 
@@ -38,6 +39,7 @@ export class BookingsRepository implements IBookingsRepository {
     async findAll(): Promise<bookingSavedDTO[] | null> {
         const bookings = await prisma.booking.findMany({
             include: {
+                
                 service: {
                     select: {
                         id: true,
@@ -50,7 +52,17 @@ export class BookingsRepository implements IBookingsRepository {
                                     select: {
                                         fullname: true
                                     }
-                                }
+                                }, 
+                                balance: true
+                            }
+                        } 
+                    }
+                },
+                client: {
+                    select:{
+                        user: {
+                            select:{
+                                fullname: true
                             }
                         }
                     }
@@ -65,8 +77,8 @@ export class BookingsRepository implements IBookingsRepository {
         const bookings = await prisma.booking.findMany({
             where: {
                 OR: [
-                    { clientId: userId },  
-                    { providerId: userId } 
+                    { clientId: userId },
+                    { providerId: userId }
                 ]
             },
             include: {
@@ -82,15 +94,24 @@ export class BookingsRepository implements IBookingsRepository {
                                     select: {
                                         fullname: true
                                     }
-                                }
+                                }, 
+                                balance: true
+                            }
+                        }
+                    }
+                },
+                client: {
+                    select:{
+                        user: {
+                            select:{
+                                fullname: true
                             }
                         }
                     }
                 }
             }
         });
-        console.log(bookings);
-        
+
         return bookings
     }
 
@@ -112,7 +133,17 @@ export class BookingsRepository implements IBookingsRepository {
                                     select: {
                                         fullname: true
                                     }
-                                }
+                                }, 
+                                balance: true
+                            }
+                        }
+                    }
+                },
+                client: {
+                    select:{
+                        user: {
+                            select:{
+                                fullname: true
                             }
                         }
                     }
@@ -122,38 +153,36 @@ export class BookingsRepository implements IBookingsRepository {
         return booking
     }
 
-    async cancelBooking(id: string): Promise<void> {
+
+    async updateBookingData(bookingId: string, {dateBooking, status}: Pick<bookingUpdateTranstionDTO, "dateBooking" | "status"> ) {
         await prisma.booking.update({
-            where: {
-                id
+            where: { id: bookingId },
+            data:{
+                dateBooking,
+                status: status
             },
-            data: {
-                status: "CANCELED"
-            }
-        })
+        });
     }
 
-    async update(serviceId: string, data: bookingCreateDTO): Promise<void> {
+
+    async updateTransaction({ bookingId, status, refundAmount, clientId, providerId, }: Omit<bookingUpdateTranstionDTO, "dateBooking">): Promise<void> {
+
         await prisma.$transaction(async (tx) => {
+
             await tx.booking.update({
-                where: {
-                    id: serviceId
-                },
-                data: {
-                    price: data.price,
-                    clientId: data.clientId,
-                    providerId: data.providerId,
-                }
+                where: { id: bookingId },
+                data: { status },
             });
 
             await tx.client.update({
-                where: { id: data.clientId },
-                data: { balance: data.newClientBalance },
+                where: { id: clientId },
+                data: { balance: { increment: refundAmount } },
             });
 
+
             await tx.provider.update({
-                where: { id: data.providerId },
-                data: { balance: data.newProviderBalance },
+                where: { id: providerId },
+                data: { balance: { decrement: refundAmount } },
             });
         });
     }

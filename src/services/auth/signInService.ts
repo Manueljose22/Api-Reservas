@@ -26,7 +26,7 @@ class SignInService {
             throw new Error("Senha incorreta");
         }
 
-        const token = generateUserToken(user.client?.id! ?? user.provider?.id);
+        const token = generateUserToken(user.id);
 
 
         return {

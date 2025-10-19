@@ -1,60 +1,53 @@
 import { BookingsRepository } from "../../repositories/bookings/BookingsRepository";
+import { bookingUpdateTranstionDTO } from "../../repositories/bookings/IBookingsRepository";
 import { ClientsRepository } from "../../repositories/clients/ClientsRepository";
 import { ProvidersRepository } from "../../repositories/providers/ProvidersRepository";
-import { IServicesCreateDTO } from "../../repositories/services/IServicesRepository";
+;
 
 
 
 class UpdateBookingService {
 
     constructor(
-            private bookingsRepository: BookingsRepository,
-            private clientsRepository: ClientsRepository,
-            private providersRepository: ProvidersRepository
-        ) { }
+        private bookingsRepository: BookingsRepository,
+        private clientsRepository: ClientsRepository,
+        private providersRepository: ProvidersRepository
+    ) { }
 
-    async execute(userId: string, serviceId: string, data: IServicesCreateDTO): Promise<void | Error> {
-        const booking = await this.bookingsRepository.findById(serviceId);
+    async execute(bookingId: string, data: bookingUpdateTranstionDTO): Promise<void | Error> {
+        const booking = await this.bookingsRepository.findById(bookingId);
+        const client = await this.clientsRepository.findById(booking?.clientId!);
+        const provider = await this.providersRepository.findById(booking?.providerId!);
 
         if (!booking) {
             throw new Error("Reserva não encontrado.");
-        }
-
-        if (booking.clientId !== userId) {
-            throw new Error("Não tem permisão para actualiazr esta reserva");
-        }
-
-        const client = await this.clientsRepository.findById(userId);
-        if (!client) {
-            throw new Error("Cliente não encontrado.");
-        }
-
-        if (client.balance < data.price) {
+        }  else if (!client || !provider) {
+            throw new Error("Cliente ou prestador não encontrados.");
+        } else if (client.balance < booking.price) {
             throw new Error("Saldo insuficiente.");
         }
 
-        const provider = await this.providersRepository.findById(data.providerId);
-        
-        if (!provider) {
-            throw new Error("Prestador de serviço não encontrado.");
+        const isCancel = data.status === "CANCELED";
+
+        if (isCancel) {
+            const refundAmount = booking.price;
+
+            await this.bookingsRepository.updateTransaction({
+                bookingId,
+                status: "CANCELED",
+                refundAmount,
+                clientId: booking.clientId,
+                providerId: booking.providerId,
+                serviceId: booking.serviceId
+            });
+
+            return;
         }
 
-        const newClientBalance = client.balance - data.price;
-        const newProviderBalance = provider.balance + data.price;
-
-
-        const updateData = {
-            name: data.name ?? booking.service.name,
-            description: data.description ?? booking.service.description,
-            price: data.price ?? booking.service.price,
-            providerId: data.providerId ?? booking.providerId,
-            clientId: userId ?? booking.clientId, 
-            serviceId: serviceId ?? booking.serviceId, 
-            newClientBalance, 
-            newProviderBalance
-        }
-
-        await this.bookingsRepository.update(serviceId, updateData)
+        await this.bookingsRepository.updateBookingData(bookingId, {
+            dateBooking: data.dateBooking,
+            status: data.status ?? booking.status,
+        });
     }
 }
 

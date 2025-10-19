@@ -56,7 +56,10 @@ export class UsersRepository implements IUsersRepository {
 
         return await prisma.user.findFirst({
             where: {
-                email: email
+                OR:[
+                    
+                ]
+                
             },
             include: {
                 provider: true,

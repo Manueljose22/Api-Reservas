@@ -11,7 +11,6 @@ class UpdateBookingController {
     async handle(request: Request, response: Response) {
         const { id } = request.params;
         const data = request.body
-        const { userId } = request;
 
         try {
 
@@ -20,7 +19,7 @@ class UpdateBookingController {
             const providersRepository = new ProvidersRepository();
             const service = new UpdateBookingService(bookingsRepository, clientsRepository, providersRepository);
 
-            await service.execute(userId, id, data);
+            await service.execute(id, data);
 
             return response.json({ message: 'Reserva actualizado com sucesso.' });
         } catch (error: any) {

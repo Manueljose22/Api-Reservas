@@ -39,7 +39,7 @@ class signUpService {
 
         const newUser = await this.IUserRepository.create(data);
 
-        const token = generateUserToken(newUser.client?.id! ?? newUser.provider?.id);
+        const token = generateUserToken(newUser.id);
 
         return {
             userId: newUser.id,

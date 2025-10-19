@@ -14,7 +14,7 @@ class CreateBookingController {
         
         const {userId} = request;
         const data = request.body as bookingCreateDTO;
-        
+      
         data.clientId = userId;
 
         try {

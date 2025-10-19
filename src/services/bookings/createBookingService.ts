@@ -24,6 +24,8 @@ class CreateBookingService {
             throw new Error("Informe o prestador de serviço");
         } else if (!data.price) {
             throw new Error("Informe o preço do serviço");
+        } else if (!data.dateBooking) {
+            throw new Error("Informe a data para o serviço");
         }
 
         const client = await this.clientsRepository.findById(data.clientId);
@@ -49,8 +51,9 @@ class CreateBookingService {
             clientId: data.clientId, 
             price: data.price, 
             providerId: data.providerId, 
-            serviceId: data.serviceId })
-
+            serviceId: data.serviceId,
+            dateBooking: data.dateBooking
+         })
     }
 }
 
