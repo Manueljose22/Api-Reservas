@@ -8,7 +8,7 @@ const router = Router();
 
 
 router.post('/auth/signUp', validateRegister, signUpController.handle);
-router.post('/auth/signIn', validateRegister, signInController.handle);
+router.post('/auth/signIn', signInController.handle);
 
 
 export {router as authRoutes};

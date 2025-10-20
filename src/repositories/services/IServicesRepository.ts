@@ -31,6 +31,8 @@ export interface IServicesRepository {
     findAll(): Promise<IServicesSavedDTO[] | null>
     findAllByProvider(userId: string): Promise<IServicesSavedDTO[] | null>
     findById(id: string): Promise<IServicesSavedDTO | null>
-    findByname(name: string): Promise<IServicesSavedDTO | null>
+    findByname(providerId: string, name: string): Promise<IServicesSavedDTO | null>
     delete(id: string): Promise<void>
+    update(serviceId: string, data: Omit <IServicesCreateDTO, 'providerId'>): Promise<void>
+
 }

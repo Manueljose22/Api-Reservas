@@ -9,7 +9,8 @@ class createServiceService {
     constructor(private IServiceRepository: IServicesRepository) { }
 
     async execute(data: IServicesCreateDTO): Promise<Error | void> {
-        const service = await this.IServiceRepository.findByname(data.name);
+
+        const service = await this.IServiceRepository.findByname(data.providerId, data.name);
 
         if (service) {
             throw new Error("Serviço já existe.");

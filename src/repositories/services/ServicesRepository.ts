@@ -6,6 +6,15 @@ import { IServicesRepository, IServicesCreateDTO, IServicesSavedDTO } from "./IS
 
 export class ServicesRepository implements IServicesRepository {
     
+    async update(serviceId: string, data: IServicesCreateDTO): Promise<void> {
+        await prisma.service.update({
+            where:{
+                id: serviceId
+            },
+            data: data
+        })
+    }
+    
     async findAllByProvider(userId: string): Promise<IServicesSavedDTO[] | null> {
         const services = await prisma.service.findMany(
             {
@@ -30,11 +39,12 @@ export class ServicesRepository implements IServicesRepository {
         return services;
     }
     
-    async findByname(name: string): Promise<IServicesSavedDTO | null> {
+    async findByname(providerId: string, name: string): Promise<IServicesSavedDTO | null> {
         const service = await prisma.service.findFirst(
             {
                 where: {
-                    name
+                    name: name,
+                    providerId: providerId
                 },
                 include: {
                     provider: {
