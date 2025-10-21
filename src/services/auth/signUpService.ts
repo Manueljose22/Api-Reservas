@@ -20,8 +20,10 @@ class signUpService {
 
         const user = await this.IUserRepository.findByEmail(data.email);
 
-        if (user) {
+        if (user?.nif === data.nif) {
             throw new Error("Já existe um usuário com este email");
+        } else if (user?.email === data.email) {
+            throw new Error("Já existe um usuário com este Nif")
         }
 
         if (!data.fullname) {

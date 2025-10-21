@@ -28,7 +28,9 @@ class CreateBookingService {
             throw new Error("Informe a data para o serviço");
         }
 
+
         const client = await this.clientsRepository.findById(data.clientId);
+     
         if (!client) {
             throw new Error("Cliente não encontrado.");
         }

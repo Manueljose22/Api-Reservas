@@ -27,9 +27,10 @@ export class ClientsRepository implements IClientsRepository {
     }
 
     async findById(id: string): Promise<clientSavedDTO | null> {
+    
         const client = await prisma.client.findFirst({
             where: {
-                id
+                id: id
             },
             include:{
                 user:{select:{fullname: true, email: true}},
