@@ -44,12 +44,8 @@ class CreateBookingService {
             throw new Error("Prestador de serviço não encontrado.");
         }
 
-        const newClientBalance = client.balance - data.price;
-        const newProviderBalance = provider.balance + data.price;
-
+        
         await this.bookingsRepository.create({ 
-            newClientBalance, 
-            newProviderBalance, 
             clientId: data.clientId, 
             price: data.price, 
             providerId: data.providerId, 

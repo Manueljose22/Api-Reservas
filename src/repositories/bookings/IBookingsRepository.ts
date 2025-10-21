@@ -5,8 +5,6 @@ export type bookingCreateDTO = {
     serviceId: string;
     providerId: string;
     price: number;
-    newClientBalance: number;
-    newProviderBalance: number;
     dateBooking: Date
 
 }

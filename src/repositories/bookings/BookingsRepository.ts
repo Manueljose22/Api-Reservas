@@ -7,7 +7,7 @@ import { bookingCreateDTO, bookingSavedDTO, bookingUpdateTranstionDTO, IBookings
 
 export class BookingsRepository implements IBookingsRepository {
 
-    async create({ clientId, newClientBalance, newProviderBalance, price, providerId, serviceId, dateBooking }: bookingCreateDTO): Promise<void> {
+    async create({ clientId, price, providerId, serviceId, dateBooking }: bookingCreateDTO): Promise<void> {
 
         await prisma.$transaction(async (tx) => {
 
@@ -23,12 +23,12 @@ export class BookingsRepository implements IBookingsRepository {
 
             await tx.client.update({
                 where: { id: clientId },
-                data: { balance: newClientBalance },
+                data: { balance: { decrement: price } },
             });
 
             await tx.provider.update({
                 where: { id: providerId },
-                data: { balance: newProviderBalance },
+                data: { balance: { increment: price } },
             });
 
             return booking;
