@@ -26,6 +26,7 @@ export type IUserSavedDTO = {
     } | null;
     provider: {
         id: string;
+        balance: number;
     } | null;
     
 }
