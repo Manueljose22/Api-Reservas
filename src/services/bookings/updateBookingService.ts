@@ -18,14 +18,12 @@ class UpdateBookingService {
         const booking = await this.bookingsRepository.findById(bookingId);
         const client = await this.clientsRepository.findById(booking?.clientId!);
         const provider = await this.providersRepository.findById(booking?.providerId!);
-
+        
         if (!booking) {
             throw new Error("Reserva não encontrado.");
         }  else if (!client || !provider) {
             throw new Error("Cliente ou prestador não encontrados.");
-        } else if (client.balance < booking.price) {
-            throw new Error("Saldo insuficiente.");
-        }
+        } 
 
         const isCancel = data.status === "CANCELED";
 
